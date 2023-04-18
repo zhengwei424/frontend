@@ -4,7 +4,6 @@
       :data="eventsInfo"
       style="width: 100%"
     >
-      <el-table-column type="selection" width="55" />
       <el-table-column
         v-if="colOptions.kind.isShow"
         label="Kind"

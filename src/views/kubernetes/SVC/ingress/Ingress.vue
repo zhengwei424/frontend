@@ -4,10 +4,10 @@
       :data="ingressesInfo"
       style="width: 100%"
     >
-      <el-table-column type="selection" width="55" />
       <el-table-column
-        fixed
-        label="名称"
+        sortable
+        label="Name"
+        prop="name"
       >
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="sendDataToDrawer(scope.row)">
@@ -18,13 +18,9 @@
       <!--v-if用于显示和隐藏表头-->
       <!--prop的值是指每一列的字段名称所对应的podsInfo中的字段名称-->
       <el-table-column
-        v-if="colOptions.status.isShow"
-        label="状态"
-        prop="status"
-      />
-      <el-table-column
         v-if="colOptions.creationTimestamp.isShow"
-        label="已创建"
+        sortable
+        label="Age"
         prop="creationTimestamp"
       />
       <el-table-column>
@@ -69,17 +65,13 @@ export default {
     return {
       // 表头所有列名称
       colOptions: {
-        status: {
-          label: '状态',
-          isShow: true
-        },
         creationTimestamp: {
-          label: '已创建',
+          label: 'Age',
           isShow: true
         }
       },
       // 获取被选择项
-      colSelected: ['状态', '已创建']
+      colSelected: ['Age']
     }
   },
   computed: {

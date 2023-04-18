@@ -4,10 +4,10 @@
       :data="nodesInfo"
       style="width: 100%"
     >
-      <el-table-column type="selection" width="55" />
       <el-table-column
-        fixed
-        label="名称"
+        sortable
+        label="Name"
+        prop="name"
       >
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="sendDataToDrawer(scope.row)">
@@ -18,9 +18,10 @@
       <!--      v-if用于显示和隐藏表头-->
       <!--      prop的值是指每一列的字段名称所对应的podsInfo中的字段名称-->
       <el-table-column
-        v-if="colOptions.label.isShow"
-        label="标签"
-        prop="label"
+        v-if="colOptions.labels.isShow"
+        sortable
+        label="Labels"
+        prop="labels"
       >
         <template slot-scope="scope">
           <div v-for="(v, k, i) in scope.row.labels" :key="i" class="labels">{{ k }}:{{ v }}</div>
@@ -28,12 +29,14 @@
       </el-table-column>
       <el-table-column
         v-if="colOptions.address.isShow"
-        label="节点"
+        sortable
+        label="Node"
         prop="In"
       />
       <el-table-column
         v-if="colOptions.creationTimestamp.isShow"
-        label="已创建"
+        sortable
+        label="Age"
         prop="creationTimestamp"
       />
       <el-table-column>
@@ -78,21 +81,21 @@ export default {
     return {
       // 表头所有列名称
       colOptions: {
-        label: {
-          label: '状态',
+        labels: {
+          label: 'Labels',
           isShow: true
         },
         address: {
-          label: '节点',
+          label: 'Node',
           isShow: true
         },
         creationTimestamp: {
-          label: '已创建',
+          label: 'Age',
           isShow: true
         }
       },
       // 获取被选择项
-      colSelected: ['状态', '节点', '已创建']
+      colSelected: ['Labels', 'Node', 'Age']
     }
   },
   computed: {
@@ -157,7 +160,7 @@ export default {
 /*表格带有label字段时的label内容样式*/
 .labels {
   /*设置边框背景颜色*/
-  background-color: #DCDFE6;
+  background-color: #58aef6;
   /*设置圆边框四个角的半径*/
   border-radius: 8px;
   /*设置边框线宽度，solid表示实线*/
@@ -167,7 +170,7 @@ export default {
   /*设置边框之间的上下间距*/
   margin-top: 8px;
   /*设置文字颜色*/
-  color: #555454;
+  color: #ffffff;
   /*设置文字与边框的距离*/
   padding: 1px 5px;
 }

@@ -22,7 +22,8 @@ export default {
   /*vh只当前屏幕可见高度1%，100px为两个导航栏高度，则剩下的就是app-main的高度*/
   height: calc(100vh - 147px);
   margin-top: 15px;
-  width: 100%;
+  padding: 5px 5px;
+  overflow-y: auto;
 }
 
 .fixed-header + .app-main {

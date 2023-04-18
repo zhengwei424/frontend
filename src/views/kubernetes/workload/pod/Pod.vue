@@ -36,10 +36,10 @@
       <!--v-if用于显示和隐藏表头-->
       <!--prop的值是指每一列的字段名称所对应的podsInfo中的字段名称-->
       <el-table-column
-        v-if="colOptions.label.isShow"
+        v-if="colOptions.labels.isShow"
         sortable
-        label="Label"
-        prop="label"
+        label="Labels"
+        prop="labels"
       >
         <template slot-scope="scope">
           <div v-for="(v, k, i) in scope.row.labels" :key="i" class="labels">{{ k }}:{{ v }}</div>
@@ -177,8 +177,8 @@ export default {
     return {
       // 表头所有列名称
       colOptions: {
-        label: {
-          label: 'Label',
+        labels: {
+          label: 'Labels',
           isShow: false
         },
         namespace: {
@@ -437,7 +437,7 @@ export default {
 /*表格带有label字段时的label内容样式*/
 .labels {
   /*设置边框背景颜色*/
-  background-color: #DCDFE6;
+  background-color: #58aef6;
   /*设置圆边框四个角的半径*/
   border-radius: 8px;
   /*设置边框线宽度，solid表示实线*/
@@ -447,7 +447,7 @@ export default {
   /*设置边框之间的上下间距*/
   margin-top: 8px;
   /*设置文字颜色*/
-  color: #555454;
+  color: #ffffff;
   /*设置文字与边框的距离*/
   padding: 1px 5px;
   /*多行省略效果*/
@@ -486,11 +486,4 @@ export default {
   display: block;
 }
 
-/*pod下拉工具菜单样式*/
-.dropDownTool {
-  width: 20px;
-  height: 20px;
-  background-color: #2e95d5;
-  /*position: relative;*/
-}
 </style>
