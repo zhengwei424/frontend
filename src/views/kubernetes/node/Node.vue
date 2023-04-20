@@ -1,8 +1,10 @@
 <template>
-  <div>
+  <div class="table-view">
     <el-table
-      :data="nodesInfo"
-      style="width: 100%"
+      :data="resourceData"
+      style="width: 100%;"
+      height="100%"
+      class="table"
     >
       <el-table-column
         sortable
@@ -77,6 +79,13 @@
 <script>
 export default {
   name: 'Node',
+  props: {
+    // 搜索
+    search: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
       // 表头所有列名称
@@ -102,6 +111,9 @@ export default {
     nodesInfo() {
       return this.$store.state.nodesInfo.nodesInfo
     },
+    resourceData() {
+      return this.nodesInfo.filter(data => !this.search || data.name.toLowerCase().includes(this.search.toLowerCase()))
+    },
     // 获取需要显示隐藏的表头列表
     tableTitle() {
       const arr = []
@@ -112,6 +124,9 @@ export default {
     }
   },
   watch: {
+    resourceData() {
+      this.$emit('getResourceLength', this.resourceData.length)
+    },
     // 显示/隐藏表头逻辑
     colSelected: {
       handler(newValue, oldValue) {
@@ -138,6 +153,7 @@ export default {
   },
   mounted() {
     this.fetchData()
+    this.$emit('getResourceType', this.$options.name)
   },
   methods: {
     fetchData() {
@@ -157,6 +173,21 @@ export default {
 </script>
 
 <style scoped>
+.table-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.table {
+  display: flex;
+  flex-direction: column;
+}
+
+.el-table__body-wrapper {
+  flex: 1;
+}
+
 /*表格带有label字段时的label内容样式*/
 .labels {
   /*设置边框背景颜色*/

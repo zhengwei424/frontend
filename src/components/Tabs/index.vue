@@ -255,7 +255,7 @@ export default {
     },
     appMainHeight() {
       // document.body.clientHeight高度始终不变，可以作为可视高度
-      this.tabsHeight = (document.body.clientHeight - this.appMainHeight - 115) + 'px'
+      this.tabsHeight = (document.body.clientHeight - this.appMainHeight - 50) + 'px'
       this.$refs.tabs.style.height = this.tabsHeight
     }
   },
@@ -492,7 +492,7 @@ export default {
         // 还原app-main高度
         this.$emit('resetAppMainHeight', this.tmpHeight)
         // 同时计算tab的高度
-        this.$refs.tabs.style.height = (document.body.clientHeight - this.appMainHeight - 115) + 'px'
+        this.$refs.tabs.style.height = (document.body.clientHeight - this.appMainHeight - 50) + 'px'
         // 改变相应图标
         this.fullScreenIcon = 'full'
       }

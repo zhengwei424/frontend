@@ -1,8 +1,10 @@
 <template>
-  <div>
+  <div class="table-view">
     <el-table
-      :data="secretsInfo"
-      style="width: 100%"
+      :data="resourceData"
+      style="width: 100%;"
+      height="100%"
+      class="table"
     >
       <el-table-column
         sortable
@@ -60,6 +62,13 @@
 <script>
 export default {
   name: 'Secret',
+  props: {
+    // 搜索
+    search: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
       // 表头所有列名称
@@ -77,6 +86,10 @@ export default {
     secretsInfo() {
       return this.$store.state.secretsInfo.secretsInfo
     },
+    resourceData() {
+      return this.secretsInfo.filter(data => !this.search || data.name.toLowerCase().includes(this.search.toLowerCase()))
+    },
+
     currentNamespace() {
       return this.$store.state.currentNamespace.currentNamespace
     },
@@ -94,6 +107,9 @@ export default {
       handler() {
         this.fetchData()
       }
+    },
+    resourceData() {
+      this.$emit('getResourceLength', this.resourceData.length)
     },
     // 显示/隐藏表头逻辑
     colSelected: {
@@ -121,6 +137,7 @@ export default {
   },
   mounted() {
     this.fetchData()
+    this.$emit('getResourceType', this.$options.name)
   },
   methods: {
     fetchData() {

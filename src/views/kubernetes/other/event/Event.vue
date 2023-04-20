@@ -1,8 +1,10 @@
 <template>
-  <div>
+  <div class="table-view">
     <el-table
-      :data="eventsInfo"
-      style="width: 100%"
+      :data="resourceData"
+      style="width: 100%;"
+      height="100%"
+      class="table"
     >
       <el-table-column
         v-if="colOptions.kind.isShow"
@@ -99,6 +101,13 @@
 <script>
 export default {
   name: 'Event',
+  props: {
+    // 搜索
+    search: {
+      type: String,
+      default: ''
+    }
+  },
   data() {
     return {
       // 表头所有列名称
@@ -156,6 +165,9 @@ export default {
     eventsInfo() {
       return this.$store.state.eventsInfo.eventsInfo
     },
+    resourceData() {
+      return this.eventsInfo.filter(data => !this.search || data.name.toLowerCase().includes(this.search.toLowerCase()))
+    },
     currentNamespace() {
       return this.$store.state.currentNamespace.currentNamespace
     },
@@ -173,6 +185,9 @@ export default {
       handler() {
         this.fetchData()
       }
+    },
+    resourceData() {
+      this.$emit('getResourceLength', this.resourceData.length)
     },
     // 显示/隐藏表头逻辑
     colSelected: {
@@ -200,6 +215,7 @@ export default {
   },
   mounted() {
     this.fetchData()
+    this.$emit('getResourceType', this.$options.name)
   },
   methods: {
     fetchData() {
@@ -218,6 +234,21 @@ export default {
 </script>
 
 <style scoped>
+.table-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.table {
+  display: flex;
+  flex-direction: column;
+}
+
+.el-table__body-wrapper {
+  flex: 1;
+}
+
 /*表头工具下拉菜单样式*/
 .el-dropdown-link {
   cursor: pointer;

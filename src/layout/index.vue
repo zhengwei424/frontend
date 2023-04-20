@@ -9,24 +9,6 @@
       <div :class="{'fixed-header':fixedHeader}">
         <navbar />
       </div>
-      <!--功能导航-->
-      <div class="my_func_nav">
-        <label class="label">Namespace</label>
-        <el-select v-model="ns" placeholder="Namespace">
-          <el-option-group
-            v-for="namespaces in namespacesOptions"
-            :key="namespaces.label"
-            :label="namespaces.label"
-          >
-            <el-option
-              v-for="(item, key) in namespaces.options"
-              :key="key"
-              :label="item"
-              :value="item"
-            />
-          </el-option-group>
-        </el-select>
-      </div>
       <!--主内容展示区-->
       <app-main ref="main" />
       <Tabs :app-main-height="appMainHeight" @resetAppMainHeight="resetAppMainHeight" />
@@ -51,7 +33,6 @@ export default {
   mixins: [ResizeMixin],
   data() {
     return {
-      ns: 'default', // 当前选择的命名空间
       oldMainHeight: 0, // 定义一个变量，存放app-main元素调整前的高度
       oldBottomContentHeight: 0, // 定义一个变量，存放bottom-content元素调整前的高度
       appMainHeight: 0 // appMainHeight初始高度
@@ -75,20 +56,6 @@ export default {
         withoutAnimation: this.sidebar.withoutAnimation,
         mobile: this.device === 'mobile'
       }
-    },
-    namespacesOptions() {
-      return this.$store.getters['namespacesInfo/namespacesOptions']
-    }
-  },
-  watch: {
-    ns: {
-      handler() {
-        this.$store.commit('currentNamespace/SETCURRENTNAMESPACE', this.ns)
-      }
-    },
-    namespacesOptions: {
-      handler(oldValue, newValue) {
-      }
     }
   },
   mounted() {
@@ -110,7 +77,7 @@ export default {
         appMain.style.height = value + 'px'
         this.getAppMainHeight()
       } else {
-        appMain.style.height = `calc(100vh - 151px)`
+        appMain.style.height = `calc(100vh - 86px)`
         this.getAppMainHeight()
       }
     }
@@ -165,22 +132,6 @@ export default {
 
 .main-container {
   position: relative;
-}
-
-.my_func_nav {
-  height: 50px;
-  box-shadow: 0 1px 4px rgb(0 21 41 / 8%);
-  position: relative;
-}
-
-.my_func_nav .label {
-  height: 50px;
-  line-height: 50px;
-  font-size: 14px;
-  font-weight: 400;
-  color: rgba(0 0 0 / 80%);
-  margin-right: 10px;
-  margin-left: 15px;
 }
 
 </style>
