@@ -7,3 +7,25 @@ export function getClusterRolesInfo() {
     method: 'get'
   })
 }
+
+export function deleteClusterRole(clusterRole) {
+  return request({
+    url: `/rbac/clusterRole/delete?clusterRole=${clusterRole}`,
+    method: 'post'
+  })
+}
+
+export function updateClusterRole(clusterRoleInfo) {
+  return request({
+    url: '/rbac/clusterRole/update',
+    method: 'post',
+    data: clusterRoleInfo
+  })
+}
+
+export function getClusterRole(clusterRole) {
+  return request({
+    url: `/rbac/clusterRole/get?clusterRole=${clusterRole}`,
+    method: 'get'
+  })
+}

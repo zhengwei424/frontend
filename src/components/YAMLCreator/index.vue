@@ -32,7 +32,7 @@
 import MonacoEditor from 'monaco-editor-vue'
 import yaml from 'js-yaml'
 import { getResourceTemplate } from '@/api/kubernetes/other/resourceTemplate'
-import { resourcesCreate } from '@/api/kubernetes/resourcesCreate'
+import { resourcesCreate } from '@/api/kubernetes/other/resourcesCreate'
 
 export default {
   name: 'YAMLCreator',

@@ -7,3 +7,25 @@ export function getRoleBindingsInfo(namespace) {
     method: 'get'
   })
 }
+
+export function deleteRoleBinding(namespace, roleBinding) {
+  return request({
+    url: `/rbac/roleBinding/delete?namespace=${namespace}&roleBinding=${roleBinding}`,
+    method: 'post'
+  })
+}
+
+export function updateRoleBinding(roleBindingInfo) {
+  return request({
+    url: '/rbac/roleBinding/update',
+    method: 'post',
+    data: roleBindingInfo
+  })
+}
+
+export function getRoleBinding(namespace, roleBinding) {
+  return request({
+    url: `/rbac/roleBinding/get?namespace=${namespace}&roleBinding=${roleBinding}`,
+    method: 'get'
+  })
+}

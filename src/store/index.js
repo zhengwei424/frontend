@@ -21,6 +21,7 @@ import storageClassesInfo from '@/store/modules/kubernetes/storage/storageClass'
 import ingressesInfo from '@/store/modules/kubernetes/SVC/ingress'
 import networkPoliciesInfo from '@/store/modules/kubernetes/SVC/networkPolicy'
 import servicesInfo from '@/store/modules/kubernetes/SVC/service'
+import endpointsInfo from '@/store/modules/kubernetes/SVC/endpoint'
 import podsInfo from '@/store/modules/kubernetes/workload/pod'
 import daemonSetsInfo from '@/store/modules/kubernetes/workload/daemonSet'
 import deploymentsInfo from '@/store/modules/kubernetes/workload/deployment'
@@ -49,6 +50,7 @@ const store = new Vuex.Store({
     rolesInfo,
     roleBindingsInfo,
     serviceAccountsInfo,
+    endpointsInfo,
     persistentVolumesInfo,
     persistentVolumeClaimsInfo,
     storageClassesInfo,

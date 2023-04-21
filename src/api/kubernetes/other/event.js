@@ -7,3 +7,25 @@ export function getEventsInfo(namespace) {
     method: 'get'
   })
 }
+
+export function deleteEvent(namespace, event) {
+  return request({
+    url: `/other/event/delete?namespace=${namespace}&event=${event}`,
+    method: 'post'
+  })
+}
+
+export function updateEvent(eventInfo) {
+  return request({
+    url: '/other/event/update',
+    method: 'post',
+    data: eventInfo
+  })
+}
+
+export function getEvent(namespace, event) {
+  return request({
+    url: `/other/event/get?namespace=${namespace}&event=${event}`,
+    method: 'get'
+  })
+}

@@ -47,7 +47,7 @@ import 'codemirror/addon/lint/lint.css'
 import 'codemirror/addon/lint/lint'
 import 'codemirror/addon/lint/yaml-lint'
 
-import { resourcesCreate } from '@/api/kubernetes/resourcesCreate'
+import { resourcesCreate } from '@/api/kubernetes/other/resourcesCreate'
 // import jsyaml from 'js-yaml'
 
 export default {

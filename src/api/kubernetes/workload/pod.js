@@ -38,13 +38,3 @@ export function getGenerateSessionID(namespace, pod, container) {
     method: 'get'
   })
 }
-
-export function getContainerLogFile(value) {
-  const {
-    namespace, pod, container, previous
-  } = value
-  return request({
-    url: `/workload/logfile/${namespace}/${pod}/${container}?previous=${previous}`,
-    method: 'get'
-  })
-}

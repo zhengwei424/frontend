@@ -18,7 +18,7 @@
           />
         </el-option-group>
       </el-select>
-      <el-input v-model="search" style="width: 200px" placeholder="Search" suffix-icon="el-icon-search" />
+      <el-input v-model="search" style="width: 200px" :placeholder="resourceType" suffix-icon="el-icon-search" />
     </div>
     <transition name="fade-transform" mode="out-in">
       <router-view :key="key" :search="search" @getResourceType="getResourceType" @getResourceLength="getResourceLength" />
@@ -73,6 +73,8 @@ export default {
   height: calc(100vh - 82px);
   overflow: hidden;
   border: 10px solid #eeeeef;
+  display: flex;
+  flex-direction: column;
 }
 
 .fixed-header + .app-main {

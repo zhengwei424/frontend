@@ -7,3 +7,25 @@ export function getIngressesInfo(namespace) {
     method: 'get'
   })
 }
+
+export function deleteIngress(namespace, ingress) {
+  return request({
+    url: `/svc/ingress/delete?namespace=${namespace}&ingress=${ingress}`,
+    method: 'post'
+  })
+}
+
+export function updateIngress(ingressInfo) {
+  return request({
+    url: '/svc/ingress/update',
+    method: 'post',
+    data: ingressInfo
+  })
+}
+
+export function getIngress(namespace, ingress) {
+  return request({
+    url: `/svc/ingress/get?namespace=${namespace}&ingress=${ingress}`,
+    method: 'get'
+  })
+}

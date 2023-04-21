@@ -46,9 +46,9 @@
               <svg-icon icon-class="dots" />
             </span>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item icon="el-icon-edit-outline" @click.native="showCronJobYaml(scope.row)">查看
+              <el-dropdown-item icon="el-icon-edit-outline" @click.native="editCronJob(scope.row)">edit/view
               </el-dropdown-item>
-              <el-dropdown-item icon="el-icon-delete" @click.native="deleteCurrentCronJob(scope.row)">删除
+              <el-dropdown-item icon="el-icon-delete" @click.native="deleteCurrentCronJob(scope.row)">delete
               </el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
@@ -61,6 +61,9 @@
 </template>
 
 <script>
+import { getCronJob, deleteCronJob } from '@/api/kubernetes/workload/cronJob'
+import YAML from 'js-yaml'
+
 export default {
   name: 'CronJob',
   props: {
@@ -146,11 +149,51 @@ export default {
     sendDataToDrawer(value) {
       console.log(value)
     },
-    showCronJobYaml(row) {
-
+    editCronJob(row) {
+      getCronJob(row.namespace, row.name).then(res => {
+        const tabData = {
+          type: 'edit',
+          resourceType: this.$options.name,
+          resourceName: row.name,
+          resourceValue: YAML.dump(res.data),
+          namespace: row.namespace,
+          language: ['json', 'yaml']
+        }
+        this.$store.commit('tabsList/ADDTAB', tabData)
+      }).catch(error => {
+        console.log(error)
+      })
     },
     deleteCurrentCronJob(row) {
-
+      this.$confirm('即将从' + row.namespace + '命名空间删除' + row.name + ',是否继续？', this.$options.name, {
+        confirmButtonText: '删除',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        new Promise((resolve, reject) => {
+          deleteCronJob(row.namespace, row.name).then(response => {
+            if (response.msg === 'ok') {
+              this.$message({
+                type: 'success',
+                message: '删除成功'
+              })
+            } else {
+              this.$message({
+                type: 'error',
+                message: '删除失败'
+              })
+            }
+            resolve()
+          }).catch(err => {
+            reject(err)
+          })
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '取消删除'
+        })
+      })
     }
   }
 }
@@ -160,15 +203,7 @@ export default {
 .table-view {
   display: flex;
   flex-direction: column;
-  height: 100%;
-}
-
-.table {
-  display: flex;
-  flex-direction: column;
-}
-
-.el-table__body-wrapper {
+  height: 0;
   flex: 1;
 }
 

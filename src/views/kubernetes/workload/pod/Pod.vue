@@ -133,7 +133,7 @@
               <svg-icon icon-class="dots" />
             </span>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item icon="el-icon-edit-outline" @click.native="podEdit(scope.row)">edit/view
+              <el-dropdown-item icon="el-icon-edit-outline" @click.native="editPod(scope.row)">edit/view
               </el-dropdown-item>
               <el-dropdown-item icon="el-icon-document" @click.native="podLog(scope.row)">log</el-dropdown-item>
               <el-dropdown-item icon="el-icon-monitor" @click.native="podTerminal(scope.row)">terminal
@@ -270,24 +270,8 @@ export default {
     fetchData() {
       this.$store.dispatch('podsInfo/getPodsInfo', this.currentNamespace)
     },
-    // 优先判断container状态及颜色等，避免使用v-for和v-if嵌套
-    getContainersStatusList(containers) {
-      const results = []
-      for (const c of containers) {
-        const c_status = { statusColor: '', tipContent: '' }
-        if (c.state === 'Running') {
-          c_status.statusColor = '#57bd54'
-          c_status.tipContent = 'name: ' + c.name + '<br/>' + 'containerID: ' + c.containerID + '<br/>' + 'startedAt: ' + c.startedAt
-        } else {
-          c_status.statusColor = 'orange'
-          c_status.tipContent = 'name: ' + c.name + '<br/>' + 'reason: ' + c.reason + '<br/>' + 'message: ' + c.message
-        }
-        results.push(c_status)
-      }
-      return results
-    },
     deleteCurrentPod(row) {
-      this.$confirm('即将从' + row.namespace + '命名空间删除' + row.name + ',是否继续？', 'Pod', {
+      this.$confirm('即将从' + row.namespace + '命名空间删除' + row.name + ',是否继续？', this.$options.name, {
         confirmButtonText: '删除',
         cancelButtonText: '取消',
         type: 'warning'
@@ -313,79 +297,74 @@ export default {
       }).catch(() => {
         this.$message({
           type: 'info',
-          message: '已取消删除'
+          message: '取消删除'
         })
       })
     },
-    // 获取完整的pod yaml文件
-    async getPodYaml(pod) {
-      // let value = ''
-      // getPod(pod.namespace, pod.name).then(response => {
-      //   value = response.data
-      // }).catch(error => {
-      //   console.log(error)
-      //   value = ''
-      // })
-      // return value  // return的值为空，是因为axios是异步操作，在getPod请求还没有完成时就返回了value=''
-      // 解决办法：使用async + await，async声明方法为异步方法，await等待异步操作执行完成
-      let value = ''
-      await getPod(pod.namespace, pod.name).then(response => {
-        value = response.data
+    // item: { type: xxx(terminal,log,podinfo,create), language: xxx(json,yaml), shell: xxx(bash, sh), pod: xxx, container: xxx}
+    editPod(row) {
+      getPod(row.namespace, row.name).then(res => {
+        const tabData = {
+          type: 'edit',
+          resourceType: this.$options.name,
+          resourceName: row.name,
+          resourceValue: YAML.dump(res.data),
+          namespace: row.namespace,
+          language: ['json', 'yaml']
+        }
+        this.$store.commit('tabsList/ADDTAB', tabData)
       }).catch(error => {
         console.log(error)
-        value = ''
       })
-      return value
+    },
+    podLog(row) {
+      this.$store.commit(
+        'tabsList/ADDTAB',
+        {
+          type: 'log',
+          resourceType: this.$options.name,
+          resourceName: row.name,
+          namespace: row.namespace,
+          containers: this.getContainersName(row)
+        })
+    },
+    podTerminal(row) {
+      this.$store.commit(
+        'tabsList/ADDTAB',
+        {
+          type: 'terminal',
+          resourceType: this.$options.name,
+          resourceName: row.name,
+          namespace: row.namespace,
+          shell: ['sh', 'bash'],
+          containers: this.getContainersName(row)
+        })
     },
     // 获取容器名
-    getContainersName(pod) {
+    getContainersName(row) {
       const containers = []
-      if (pod.containers) {
-        pod.containers.forEach(item => {
+      if (row.containers) {
+        row.containers.forEach(item => {
           containers.push(item.name)
         })
       }
       return containers
     },
-    // item: { type: xxx(terminal,log,podinfo,create), language: xxx(json,yaml), shell: xxx(bash, sh), pod: xxx, container: xxx}
-    podEdit(pod) {
-      // 异步方法返回值为promise<>,获取promiseResult需要用.then(res=>{})
-      this.getPodYaml(pod).then(res => {
-        const data = {
-          type: 'edit',
-          resourceType: 'Pod',
-          resourceName: pod.name,
-          resourceValue: YAML.dump(res),
-          // resourceValue: JSON.stringify(res, null, 4),
-          namespace: pod.namespace,
-          language: ['json', 'yaml'],
-          containers: this.getContainersName(pod)
+    // 优先判断container状态及颜色等，避免使用v-for和v-if嵌套
+    getContainersStatusList(containers) {
+      const results = []
+      for (const c of containers) {
+        const c_status = { statusColor: '', tipContent: '' }
+        if (c.state === 'Running') {
+          c_status.statusColor = '#57bd54'
+          c_status.tipContent = 'name: ' + c.name + '<br/>' + 'containerID: ' + c.containerID + '<br/>' + 'startedAt: ' + c.startedAt
+        } else {
+          c_status.statusColor = 'orange'
+          c_status.tipContent = 'name: ' + c.name + '<br/>' + 'reason: ' + c.reason + '<br/>' + 'message: ' + c.message
         }
-        this.$store.commit('tabsList/ADDTAB', data)
-      })
-    },
-    podLog(pod) {
-      this.$store.commit(
-        'tabsList/ADDTAB',
-        {
-          type: 'log',
-          resourceType: 'Pod',
-          resourceName: pod.name,
-          namespace: pod.namespace,
-          containers: this.getContainersName(pod)
-        })
-    },
-    podTerminal(pod) {
-      this.$store.commit(
-        'tabsList/ADDTAB',
-        {
-          type: 'terminal',
-          resourceType: 'Pod',
-          resourceName: pod.name,
-          namespace: pod.namespace,
-          shell: ['sh', 'bash'],
-          containers: this.getContainersName(pod)
-        })
+        results.push(c_status)
+      }
+      return results
     }
   }
 }
@@ -395,15 +374,8 @@ export default {
 .table-view {
   display: flex;
   flex-direction: column;
-  height: 100%;
-}
-
-.table {
-  display: flex;
-  flex-direction: column;
-}
-
-.el-table__body-wrapper {
+  /*高度设置为0，让flex撑开*/
+  height: 0;
   flex: 1;
 }
 

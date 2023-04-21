@@ -8,3 +8,24 @@ export function getDeploymentsInfo(namespace) {
   })
 }
 
+export function deleteDeployment(namespace, deployment) {
+  return request({
+    url: `/workload/deployment/delete?namespace=${namespace}&deployment=${deployment}`,
+    method: 'post'
+  })
+}
+
+export function updateDeployment(deploymentInfo) {
+  return request({
+    url: '/workload/deployment/update',
+    method: 'post',
+    data: deploymentInfo
+  })
+}
+
+export function getDeployment(namespace, deployment) {
+  return request({
+    url: `/workload/deployment/get?namespace=${namespace}&deployment=${deployment}`,
+    method: 'get'
+  })
+}

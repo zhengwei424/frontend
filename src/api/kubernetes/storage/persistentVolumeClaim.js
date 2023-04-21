@@ -7,3 +7,25 @@ export function getPersistentVolumeClaimsInfo(namespace) {
     method: 'get'
   })
 }
+
+export function deletePersistentVolumeClaim(namespace, persistentVolumeClaim) {
+  return request({
+    url: `/storage/persistentVolumeClaim/delete?namespace=${namespace}&persistentVolumeClaim=${persistentVolumeClaim}`,
+    method: 'post'
+  })
+}
+
+export function updatePersistentVolumeClaim(persistentVolumeClaimInfo) {
+  return request({
+    url: '/storage/persistentVolumeClaim/update',
+    method: 'post',
+    data: persistentVolumeClaimInfo
+  })
+}
+
+export function getPersistentVolumeClaim(namespace, persistentVolumeClaim) {
+  return request({
+    url: `/storage/persistentVolumeClaim/get?namespace=${namespace}&persistentVolumeClaim=${persistentVolumeClaim}`,
+    method: 'get'
+  })
+}

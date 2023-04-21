@@ -7,3 +7,25 @@ export function getConfigMapsInfo(namespace) {
     method: 'get'
   })
 }
+
+export function deleteConfigMap(namespace, configMap) {
+  return request({
+    url: `/config/configMap/delete?namespace=${namespace}&configMap=${configMap}`,
+    method: 'post'
+  })
+}
+
+export function updateConfigMap(configMapInfo) {
+  return request({
+    url: '/config/configMap/update',
+    method: 'post',
+    data: configMapInfo
+  })
+}
+
+export function getConfigMap(namespace, configMap) {
+  return request({
+    url: `/config/configMap/get?namespace=${namespace}&configMap=${configMap}`,
+    method: 'get'
+  })
+}

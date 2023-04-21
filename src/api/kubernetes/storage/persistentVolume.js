@@ -7,3 +7,25 @@ export function getPersistentVolumesInfo() {
     method: 'get'
   })
 }
+
+export function deletePersistentVolume(persistentVolume) {
+  return request({
+    url: `/storage/persistentVolume/delete?persistentVolume=${persistentVolume}`,
+    method: 'post'
+  })
+}
+
+export function updatePersistentVolume(persistentVolumeInfo) {
+  return request({
+    url: '/storage/persistentVolume/update',
+    method: 'post',
+    data: persistentVolumeInfo
+  })
+}
+
+export function getPersistentVolume(persistentVolume) {
+  return request({
+    url: `/storage/persistentVolume/get?persistentVolume=${persistentVolume}`,
+    method: 'get'
+  })
+}

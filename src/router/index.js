@@ -284,6 +284,12 @@ export const constantRoutes = [
         name: 'Services',
         component: () => import('@/views/kubernetes/SVC/service/Service'),
         meta: { title: 'Services' }
+      },
+      {
+        path: 'endpoints',
+        name: 'endpoints',
+        component: () => import('@/views/kubernetes/SVC/endpoint/Endpoint'),
+        meta: { title: 'Endpoints' }
       }
     ]
   },

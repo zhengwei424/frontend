@@ -7,3 +7,25 @@ export function getStorageClassesInfo() {
     method: 'get'
   })
 }
+
+export function deleteStorageClass(storageClass) {
+  return request({
+    url: `/storage/storageClass/delete?storageClass=${storageClass}`,
+    method: 'post'
+  })
+}
+
+export function updateStorageClass(storageClassInfo) {
+  return request({
+    url: '/storage/storageClass/update',
+    method: 'post',
+    data: storageClassInfo
+  })
+}
+
+export function getStorageClass(storageClass) {
+  return request({
+    url: `/storage/storageClass/get?storageClass=${storageClass}`,
+    method: 'get'
+  })
+}

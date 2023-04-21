@@ -7,3 +7,25 @@ export function getSecretsInfo(namespace) {
     method: 'get'
   })
 }
+
+export function deleteSecret(namespace, secret) {
+  return request({
+    url: `/config/secret/delete?namespace=${namespace}&secret=${secret}`,
+    method: 'post'
+  })
+}
+
+export function updateSecret(secretInfo) {
+  return request({
+    url: '/config/secret/update',
+    method: 'post',
+    data: secretInfo
+  })
+}
+
+export function getSecret(namespace, secret) {
+  return request({
+    url: `/config/secret/get?namespace=${namespace}&secret=${secret}`,
+    method: 'get'
+  })
+}

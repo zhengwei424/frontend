@@ -7,3 +7,25 @@ export function getClusterRoleBindingsInfo() {
     method: 'get'
   })
 }
+
+export function deleteClusterRoleBinding(clusterRoleBinding) {
+  return request({
+    url: `/rbac/clusterRoleBinding/delete?clusterRoleBinding=${clusterRoleBinding}`,
+    method: 'post'
+  })
+}
+
+export function updateClusterRoleBinding(clusterRoleBindingInfo) {
+  return request({
+    url: '/rbac/clusterRoleBinding/update',
+    method: 'post',
+    data: clusterRoleBindingInfo
+  })
+}
+
+export function getClusterRoleBinding(clusterRoleBinding) {
+  return request({
+    url: `/rbac/clusterRoleBinding/get?clusterRoleBinding=${clusterRoleBinding}`,
+    method: 'get'
+  })
+}

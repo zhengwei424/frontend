@@ -8,3 +8,24 @@ export function getCronJobsInfo(namespace) {
   })
 }
 
+export function deleteCronJob(namespace, cronJob) {
+  return request({
+    url: `/workload/cronJob/delete?namespace=${namespace}&cronJob=${cronJob}`,
+    method: 'post'
+  })
+}
+
+export function updateCronJob(cronJobInfo) {
+  return request({
+    url: '/workload/cronJob/update',
+    method: 'post',
+    data: cronJobInfo
+  })
+}
+
+export function getCronJob(namespace, cronJob) {
+  return request({
+    url: `/workload/cronJob/get?namespace=${namespace}&cronJob=${cronJob}`,
+    method: 'get'
+  })
+}

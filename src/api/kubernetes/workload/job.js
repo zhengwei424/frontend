@@ -8,3 +8,24 @@ export function getJobsInfo(namespace) {
   })
 }
 
+export function deleteJob(namespace, job) {
+  return request({
+    url: `/workload/job/delete?namespace=${namespace}&job=${job}`,
+    method: 'post'
+  })
+}
+
+export function updateJob(jobInfo) {
+  return request({
+    url: '/workload/job/update',
+    method: 'post',
+    data: jobInfo
+  })
+}
+
+export function getJob(namespace, job) {
+  return request({
+    url: `/workload/job/get?namespace=${namespace}&job=${job}`,
+    method: 'get'
+  })
+}
