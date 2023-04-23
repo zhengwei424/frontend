@@ -12,9 +12,15 @@
         prop="name"
       >
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="sendDataToDrawer(scope.row)">
-            {{ scope.row.name }}
-          </el-button>
+          <el-tooltip
+            placement="top"
+            effect="dark"
+          >
+            <div slot="content">{{ scope.row.name }}</div>
+            <div class="name">
+              {{ scope.row.name }}
+            </div>
+          </el-tooltip>
         </template>
       </el-table-column>
       <!--      v-if用于显示和隐藏表头-->
@@ -30,10 +36,37 @@
         </template>
       </el-table-column>
       <el-table-column
-        v-if="colOptions.address.isShow"
+        v-if="colOptions.ready.isShow"
         sortable
-        label="Node"
-        prop="In"
+        label="Ready"
+        prop="ready"
+      >
+        <template slot-scope="scope">
+          <span v-if="scope.row.ready === 'Ready'" style="color: #57bd54">{{ scope.row.ready }}</span>
+          <span v-else style="color: red">{{ scope.row.ready }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        v-if="colOptions.taints.isShow"
+        sortable
+        label="Taints"
+        prop="taints"
+      >
+        <template slot-scope="scope">
+          <span>{{ scope.row.taints ? scope.row.taints.length : 0 }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        v-if="colOptions.roles.isShow"
+        sortable
+        label="Roles"
+        prop="roles"
+      />
+      <el-table-column
+        v-if="colOptions.version.isShow"
+        sortable
+        label="Version"
+        prop="kubeletVersion"
       />
       <el-table-column
         v-if="colOptions.creationTimestamp.isShow"
@@ -95,10 +128,22 @@ export default {
       colOptions: {
         labels: {
           label: 'Labels',
+          isShow: false
+        },
+        ready: {
+          label: 'Ready',
           isShow: true
         },
-        address: {
-          label: 'Node',
+        taints: {
+          label: 'Taints',
+          isShow: true
+        },
+        roles: {
+          label: 'Roles',
+          isShow: true
+        },
+        version: {
+          label: 'Version',
           isShow: true
         },
         creationTimestamp: {
@@ -107,7 +152,7 @@ export default {
         }
       },
       // 获取被选择项
-      colSelected: ['Labels', 'Node', 'Age']
+      colSelected: ['Ready', 'Taints', 'Roles', 'Version', 'Age']
     }
   },
   computed: {
@@ -161,9 +206,6 @@ export default {
   methods: {
     fetchData() {
       this.$store.dispatch('nodesInfo/getNodesInfo')
-    },
-    sendDataToDrawer(value) {
-      console.log(value)
     },
     editNode(row) {
       getNode(row.name).then(res => {
@@ -221,6 +263,12 @@ export default {
   flex-direction: column;
   height: 0;
   flex: 1;
+}
+
+.name {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 /*表格带有label字段时的label内容样式*/

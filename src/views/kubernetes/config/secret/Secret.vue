@@ -11,9 +11,15 @@
         label="Name"
       >
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="sendDataToDrawer(scope.row)">
-            {{ scope.row.name }}
-          </el-button>
+          <el-tooltip
+            placement="top"
+            effect="dark"
+          >
+            <div slot="content">{{ scope.row.name }}</div>
+            <div class="name">
+              {{ scope.row.name }}
+            </div>
+          </el-tooltip>
         </template>
       </el-table-column>
       <!--v-if用于显示和隐藏表头-->
@@ -146,9 +152,6 @@ export default {
     fetchData() {
       this.$store.dispatch('secretsInfo/getSecretsInfo', this.currentNamespace)
     },
-    sendDataToDrawer(value) {
-      console.log(value)
-    },
     editSecret(row) {
       getSecret(row.namespace, row.name).then(res => {
         const tabData = {
@@ -206,6 +209,13 @@ export default {
   height: 0;
   flex: 1;
 }
+
+.name {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
 /*表头工具下拉菜单样式*/
 .el-dropdown-link {
   cursor: pointer;

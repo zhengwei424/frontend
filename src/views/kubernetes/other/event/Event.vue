@@ -224,9 +224,6 @@ export default {
     fetchData() {
       this.$store.dispatch('eventsInfo/getEventsInfo', this.currentNamespace)
     },
-    sendDataToDrawer(value) {
-      console.log(value)
-    },
     editEvent(row) {
       getEvent(row.namespace, row.name).then(res => {
         const tabData = {
@@ -283,6 +280,12 @@ export default {
   flex-direction: column;
   height: 0;
   flex: 1;
+}
+
+.name {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 /*表头工具下拉菜单样式*/

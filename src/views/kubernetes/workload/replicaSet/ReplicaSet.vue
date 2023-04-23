@@ -12,9 +12,15 @@
         prop="name"
       >
         <template slot-scope="scope">
-          <span>
-            {{ scope.row.name }}
-          </span>
+          <el-tooltip
+            placement="top"
+            effect="dark"
+          >
+            <div slot="content">{{ scope.row.name }}</div>
+            <div class="name">
+              {{ scope.row.name }}
+            </div>
+          </el-tooltip>
         </template>
       </el-table-column>
       <!--v-if用于显示和隐藏表头-->
@@ -204,6 +210,12 @@ export default {
   flex-direction: column;
   height: 0;
   flex: 1;
+}
+
+.name {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 /*表头工具下拉菜单样式*/
