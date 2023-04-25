@@ -37,7 +37,9 @@
               v-for="item in tabList"
               :key="item.id"
               class="tabs-tab"
+              :class="'id-' + item.id "
               @click="handleChange(item.id)"
+              @contextmenu.prevent="openMouseRightMenu(item.id)"
             >
               <div class="tab-title" :title="[ item.type === 'create' ? 'create resource' : item.resourceType + ':' + item.resourceName]">
                 <template v-if="item.type === 'create'">
@@ -55,18 +57,8 @@
       </div>
       <!--添加-->
       <div style="flex: 1;">
-        <div ref="add" class="add" @click="handleDropMenu">
+        <div ref="add" class="add" @click="createResource">
           <svg-icon class="add-icon" icon-class="add" />
-          <ul v-show="showDropMenu" ref="drop-menu" class="drop-menu">
-            <li @click.stop="createResource">
-              <svg-icon class="edit-icon" icon-class="edit" />
-              Create resource
-            </li>
-            <li @click.stop="createTerminal">
-              <svg-icon class="terminal-icon" icon-class="terminal" />
-              Terminal session
-            </li>
-          </ul>
         </div>
       </div>
       <!--最大化/最小化-->
@@ -95,6 +87,13 @@
         <!--关闭tab后，无法清理inactive组件，目前还没找到解决办法！！！！！！！！！！，不影响使用-->
         <component :is="currentKeepAliveComponent" v-if="activeKey !== ''" :key="currentTab.id" :current-tab="currentTab" :tabs-height="tabsHeight" />
       </keep-alive>
+    </div>
+    <!--鼠标右键菜单-->
+    <div v-if="showMouseRightMenu" ref="menu" class="menu-box">
+      <div class="menu-item" @click="closeItem(1)">Close</div>
+      <div class="menu-item" @click="closeItem(2)">Close all tabs</div>
+      <div class="menu-item" @click="closeItem(3)">close other tabs</div>
+      <div class="menu-item" @click="closeItem(4)">close tab to the right</div>
     </div>
   </div>
 </template>
@@ -159,8 +158,6 @@ export default {
       },
       // 该标志用于调整窗口鼠标按下时，获取一次app-main的高度,用于mousemove时的计算
       isGetAppMainHeight: true,
-      // 是否展示drop menu
-      showDropMenu: false,
       // 被选中的tab标签对应于tabList内的某个项
       currentTab: {},
       // 被关闭的tab索引
@@ -168,7 +165,9 @@ export default {
       // tabs的高度
       tabsHeight: '',
       // 当前keep-alive组件
-      currentKeepAliveComponent: ''
+      currentKeepAliveComponent: '',
+      // 是否展示鼠标右键功能菜单
+      showMouseRightMenu: false
     }
   },
   computed: {
@@ -271,8 +270,8 @@ export default {
     // 创建监听
     this.observer = elementResizeDetectorMaker()
     this.observer.listenTo(this.$refs.navWrap, this.handleResize)
-    // 监听click事件，用于关闭add按钮弹出的下拉菜单
-    document.addEventListener('click', this.clickOutOfAdd)
+    // 监听click事件，实现点击空白处关闭右键功能菜单
+    document.addEventListener('click', this.closeMouseRightMenu)
 
     // 挂载标志位置为true
     this.isMounted = true
@@ -280,7 +279,7 @@ export default {
   beforeDestroy() {
     // 销毁监听
     this.observer.removeListener(this.$refs.navWrap, this.handleResize)
-    document.removeEventListener('click', this.clickOutOfAdd)
+    document.removeEventListener('click', this.closeMouseRightMenu)
   },
   methods: {
     // 获取当前活动标签的相对于index为0的标签的水平偏移量，用于水平移动bar
@@ -497,37 +496,6 @@ export default {
         this.fullScreenIcon = 'full'
       }
     },
-    // add按钮被点击
-    handleDropMenu() {
-      // 是否展示下拉菜单
-      this.showDropMenu = !this.showDropMenu
-      // 根据add位置及底部导航栏位置判断下拉菜单如何展示
-      if (this.$refs.resizeBar.offsetWidth - this.$refs.add.offsetLeft >= 160) {
-        if (this.upDownIcon === 'up') {
-          this.$refs['drop-menu'].style.left = '0'
-          this.$refs['drop-menu'].style.top = ''
-          this.$refs['drop-menu'].style.right = ''
-          this.$refs['drop-menu'].style.bottom = '30px'
-        } else {
-          this.$refs['drop-menu'].style.left = '0'
-          this.$refs['drop-menu'].style.top = '30px'
-          this.$refs['drop-menu'].style.right = ''
-          this.$refs['drop-menu'].style.bottom = ''
-        }
-      } else {
-        if (this.upDownIcon === 'up') {
-          this.$refs['drop-menu'].style.left = ''
-          this.$refs['drop-menu'].style.top = ''
-          this.$refs['drop-menu'].style.right = '0'
-          this.$refs['drop-menu'].style.bottom = '30px'
-        } else {
-          this.$refs['drop-menu'].style.left = ''
-          this.$refs['drop-menu'].style.top = '30px'
-          this.$refs['drop-menu'].style.right = '0'
-          this.$refs['drop-menu'].style.bottom = ''
-        }
-      }
-    },
     // add按钮新建资源菜单被点击
     createResource() {
       // 点击之后关闭菜单
@@ -539,16 +507,57 @@ export default {
           type: 'create'
         })
     },
-    // add按钮新建终端菜单被点击
-    createTerminal() {
-      // 点击之后关闭菜单
-      this.showDropMenu = false
-    },
     // 点击其他位置，关闭add按钮的下拉菜单
-    clickOutOfAdd(e) {
-      const addRef = this.$refs.add
-      if (!addRef.contains(e.target) && this.showDropMenu) {
-        this.showDropMenu = false
+    closeMouseRightMenu(e) {
+      const menu = this.$refs.menu
+      if (menu) {
+        if (!menu.contains(e.target) && this.showMouseRightMenu) {
+          this.showMouseRightMenu = false
+        }
+      }
+    },
+    // tab标签鼠标右击弹出close tab功能菜单
+    openMouseRightMenu(id) {
+      let idx = 0
+      this.tabList.forEach((v, i) => {
+        if (v.id === id) {
+          idx = i
+        }
+      })
+      // 弹出菜单
+      this.showMouseRightMenu = true
+      this.$nextTick(() => {
+        this.$refs.menu.style.left = idx * 182 + 'px'
+      })
+    },
+    closeItem(opt, idx) {
+      if (opt === 1) {
+        // 删除自己
+        this.tabList.splice(idx, 1)
+        // 关闭菜单
+        this.showMouseRightMenu = false
+      } else if (opt === 2) {
+        // 删除所有
+        this.tabList.splice(0)
+        // 关闭菜单
+        this.showMouseRightMenu = false
+      } else if (opt === 3) {
+        // 删除其他
+        if (idx === (this.tabList.length - 1)) {
+          this.tabList.splice(0, idx)
+        } else if (idx > 0) {
+          this.tabList.splice(0, idx)
+          this.tabList.splice(idx + 1)
+        } else {
+          this.tabList.splice(1)
+        }
+        // 关闭菜单
+        this.showMouseRightMenu = false
+      } else if (opt === 4) {
+        // 删除右边
+        this.tabList.splice(idx + 1)
+        // 关闭菜单
+        this.showMouseRightMenu = false
       }
     }
   }
@@ -733,6 +742,19 @@ export default {
 
 .drop-menu li:hover .svg-icon {
   fill: white;
+}
+
+.menu-box {
+  width: 166px;
+  padding: 5px 5px;
+  position: absolute;
+  background-color: #eeeeef;
+  top: 36px;
+  z-index: 2;
+}
+
+.menu-item:hover {
+  background-color: #2e95d5;
 }
 
 </style>
