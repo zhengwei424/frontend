@@ -23,6 +23,35 @@
           </el-tooltip>
         </template>
       </el-table-column>
+      <el-table-column
+        v-if="colOptions.namespace.isShow"
+        sortable
+        label="Namespace"
+        prop="namespace"
+      />
+      <el-table-column
+        v-if="colOptions.pods.isShow"
+        sortable
+        label="Pods"
+      >
+        <template slot-scope="scope">
+          <span v-if="scope.row.desire === 0 && scope.row.available ===0 " style="color: orange">
+            {{ scope.row.desire }}/{{ scope.row.available }}</span>
+          <span v-else-if="scope.row.desire === scope.row.available" style="color: #57bd54">
+            {{ scope.row.desire }}/{{ scope.row.available }}</span>
+          <span v-else style="color: red">{{ scope.row.desire }}/{{ scope.row.available }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        v-if="colOptions.nodeSelector.isShow"
+        sortable
+        label="Node Selector"
+        prop="nodeSelector"
+      >
+        <template slot-scope="scope">
+          <div v-for="(v, k, i) in scope.row.nodeSelector" :key="i" class="labels">{{ k }}:{{ v }}</div>
+        </template>
+      </el-table-column>
       <!--v-if用于显示和隐藏表头-->
       <!--prop的值是指每一列的字段名称所对应的podsInfo中的字段名称-->
       <el-table-column
@@ -83,13 +112,25 @@ export default {
     return {
       // 表头所有列名称
       colOptions: {
+        namespace: {
+          label: 'Namespace',
+          isShow: true
+        },
+        pods: {
+          label: 'Pods',
+          isShow: true
+        },
+        nodeSelector: {
+          label: 'Node Selector',
+          isShow: true
+        },
         creationTimestamp: {
           label: 'Age',
           isShow: true
         }
       },
       // 获取被选择项
-      colSelected: ['Age']
+      colSelected: ['Namespace', 'Pods', 'Node Selector', 'Age']
     }
   },
   computed: {
@@ -214,6 +255,31 @@ export default {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+}
+
+/*表格带有label字段时的label内容样式*/
+.labels {
+  /*设置边框背景颜色*/
+  background-color: #58aef6;
+  /*设置圆边框四个角的半径*/
+  border-radius: 8px;
+  /*设置边框线宽度，solid表示实线*/
+  border: 0px solid;
+  /*设置div自适应文字宽度*/
+  width: fit-content;
+  /*设置边框之间的上下间距*/
+  margin-top: 8px;
+  /*设置文字颜色*/
+  color: #ffffff;
+  /*设置文字与边框的距离*/
+  padding: 1px 5px;
+  /*多行省略效果*/
+  display: -webkit-box;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  /*这里是1行*/
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
 }
 
 /*表头工具下拉菜单样式*/

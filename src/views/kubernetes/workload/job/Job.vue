@@ -26,6 +26,36 @@
       <!--v-if用于显示和隐藏表头-->
       <!--prop的值是指每一列的字段名称所对应的podsInfo中的字段名称-->
       <el-table-column
+        v-if="colOptions.namespace.isShow"
+        sortable
+        label="Namespace"
+        prop="namespace"
+      />
+      <el-table-column
+        v-if="colOptions.completions.isShow"
+        sortable
+        label="Completions"
+      >
+        <template slot-scope="scope">
+          <span v-if="scope.row.completions === 0 && scope.row.desiredCompletions === 0" style="color: orange">
+            {{ scope.row.completions }}/{{ scope.row.desiredCompletions }}</span>
+          <span v-else-if="scope.row.completions === scope.row.desiredCompletions" style="color: #57bd54">
+            {{ scope.row.completions }}/{{ scope.row.desiredCompletions }}</span>
+          <span v-else style="color: red">{{ scope.row.completions }}/{{ scope.row.desiredCompletions }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        v-if="colOptions.conditions.isShow"
+        sortable
+        label="Conditions"
+        prop="conditions"
+      >
+        <template slot-scope="scope">
+          <span v-if="scope.row.conditions === 'Complete'" style="color: #57bd54">{{ scope.row.conditions }}</span>
+          <span v-else style="color: red">{{ scope.row.conditions }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
         v-if="colOptions.creationTimestamp.isShow"
         sortable
         label="Age"
@@ -83,13 +113,25 @@ export default {
     return {
       // 表头所有列名称
       colOptions: {
+        namespace: {
+          label: 'Namespace',
+          isShow: true
+        },
+        completions: {
+          label: 'Completions',
+          isShow: true
+        },
+        conditions: {
+          label: 'Conditions',
+          isShow: true
+        },
         creationTimestamp: {
           label: 'Age',
           isShow: true
         }
       },
       // 获取被选择项
-      colSelected: ['Age']
+      colSelected: ['Namespace', 'Completions', 'Conditions', 'Age']
     }
   },
   computed: {

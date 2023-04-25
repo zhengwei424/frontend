@@ -282,12 +282,6 @@ export default {
   flex: 1;
 }
 
-.name {
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-}
-
 /*表头工具下拉菜单样式*/
 .el-dropdown-link {
   cursor: pointer;

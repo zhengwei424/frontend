@@ -26,6 +26,12 @@
       <!--v-if用于显示和隐藏表头-->
       <!--prop的值是指每一列的字段名称所对应的podsInfo中的字段名称-->
       <el-table-column
+        v-if="colOptions.namespace.isShow"
+        sortable
+        label="Namespace"
+        prop="namespace"
+      />
+      <el-table-column
         v-if="colOptions.creationTimestamp.isShow"
         sortable
         label="Age"
@@ -83,6 +89,10 @@ export default {
     return {
       // 表头所有列名称
       colOptions: {
+        namespace: {
+          label: 'Namespace',
+          isShow: true
+        },
         creationTimestamp: {
           label: 'Age',
           isShow: true

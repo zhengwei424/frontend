@@ -26,6 +26,25 @@
       <!--v-if用于显示和隐藏表头-->
       <!--prop的值是指每一列的字段名称所对应的podsInfo中的字段名称-->
       <el-table-column
+        v-if="colOptions.namespace.isShow"
+        sortable
+        label="Namespace"
+        prop="namespace"
+      />
+      <el-table-column
+        v-if="colOptions.replicas.isShow"
+        sortable
+        label="Replicas"
+      >
+        <template slot-scope="scope">
+          <span v-if="scope.row.readyReplicas === 0 && scope.row.replicas === 0" style="color: orange">
+            {{ scope.row.readyReplicas }}/{{ scope.row.replicas }}</span>
+          <span v-else-if="scope.row.readyReplicas === scope.row.replicas" style="color: #57bd54">
+            {{ scope.row.readyReplicas }}/{{ scope.row.replicas }}</span>
+          <span v-else style="color: red">{{ scope.row.readyReplicas }}/{{ scope.row.replicas }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
         v-if="colOptions.creationTimestamp.isShow"
         sortable
         label="Age"
@@ -83,13 +102,21 @@ export default {
     return {
       // 表头所有列名称
       colOptions: {
+        namespace: {
+          label: 'Namespace',
+          isShow: true
+        },
+        replicas: {
+          label: 'Replicas',
+          isShow: true
+        },
         creationTimestamp: {
           label: 'Age',
           isShow: true
         }
       },
       // 获取被选择项
-      colSelected: ['Age']
+      colSelected: ['Namespace', 'Replicas', 'Age']
     }
   },
   computed: {

@@ -26,6 +26,63 @@
       <!--v-if用于显示和隐藏表头-->
       <!--prop的值是指每一列的字段名称所对应的podsInfo中的字段名称-->
       <el-table-column
+        v-if="colOptions.namespace.isShow"
+        sortable
+        label="Namespace"
+        prop="namespace"
+      />
+      <el-table-column
+        v-if="colOptions.type.isShow"
+        sortable
+        label="Type"
+        prop="type"
+      />
+      <el-table-column
+        v-if="colOptions.clusterIP.isShow"
+        sortable
+        label="ClusterIP"
+        prop="clusterIP"
+      />
+      <el-table-column
+        v-if="colOptions.ports.isShow"
+        sortable
+        label="Ports"
+      >
+        <template slot-scope="scope">
+          <div v-for="(v, i) in scope.row.ports" :key="i">{{ v }}</div>
+        </template>
+      </el-table-column>
+      <el-table-column
+        v-if="colOptions.externalIP.isShow"
+        sortable
+        label="ExternalIP"
+      >
+        <template slot-scope="scope">
+          <div v-for="(v, k) in scope.row.externalIP" :key="k">{{ v }}</div>
+        </template>
+      </el-table-column>
+      <el-table-column
+        v-if="colOptions.selector.isShow"
+        sortable
+        width="auto"
+        label="Selector"
+        prop="selector"
+      >
+        <template slot-scope="scope">
+          <div v-for="(v, k, i) in scope.row.selector" :key="i" class="labels">{{ k }}={{ v }}</div>
+        </template>
+      </el-table-column>
+      <el-table-column
+        v-if="colOptions.status.isShow"
+        sortable
+        label="Status"
+      >
+        <template slot-scope="scope">
+          <span v-if="scope.row.status" style="color: #57bd54">Active</span>
+          <span v-else style="color: red">Pending</span>
+        </template>
+      </el-table-column>
+      <el-table-column
         v-if="colOptions.creationTimestamp.isShow"
         sortable
         label="Age"
@@ -83,13 +140,41 @@ export default {
     return {
       // 表头所有列名称
       colOptions: {
+        namespace: {
+          label: 'Namespace',
+          isShow: true
+        },
+        type: {
+          label: 'Type',
+          isShow: true
+        },
+        clusterIP: {
+          label: 'Cluster IP',
+          isShow: true
+        },
+        ports: {
+          label: 'Ports',
+          isShow: true
+        },
+        externalIP: {
+          label: 'External IP',
+          isShow: false
+        },
+        selector: {
+          label: 'Selector',
+          isShow: true
+        },
+        status: {
+          label: 'Status',
+          isShow: true
+        },
         creationTimestamp: {
           label: 'Age',
           isShow: true
         }
       },
       // 获取被选择项
-      colSelected: ['Age']
+      colSelected: ['Namespace', 'Type', 'Cluster IP', 'Ports', 'Selector', 'Status', 'Age']
     }
   },
   computed: {
@@ -214,6 +299,31 @@ export default {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+}
+
+/*表格带有label字段时的label内容样式*/
+.labels {
+  /*设置边框背景颜色*/
+  background-color: #58aef6;
+  /*设置圆边框四个角的半径*/
+  border-radius: 8px;
+  /*设置边框线宽度，solid表示实线*/
+  border: 0px solid;
+  /*设置div自适应文字宽度*/
+  width: fit-content;
+  /*设置边框之间的上下间距*/
+  margin-top: 8px;
+  /*设置文字颜色*/
+  color: #ffffff;
+  /*设置文字与边框的距离*/
+  padding: 1px 5px;
+  /*多行省略效果*/
+  display: -webkit-box;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  /*这里是1行*/
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
 }
 
 /*表头工具下拉菜单样式*/
