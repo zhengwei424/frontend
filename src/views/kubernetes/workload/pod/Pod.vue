@@ -6,6 +6,66 @@
       height="100%"
       class="table"
     >
+      <el-table-column
+        type="expand"
+      >
+        <template slot-scope="scope">
+          <grafana-time-picker @getValues="getValues" />
+
+          <div class="grafana-embed">
+            <!--cpu useage-->
+            <div>
+              <iframe
+                :src="'https://192.168.10.168/grafana/d-solo/c6e6bdd4-2b06-4c0b-a1dd-f5a7fa7f6e79/uat?orgId=1&theme=light&panelId=9&var-namespace=' + scope.row.namespace + '&var-pod=' + scope.row.name + '&from=' + startTimestamp + '&to='+ endTimestamp + '&refresh=' + refresh"
+                width="450"
+                height="200"
+                frameborder="0"
+              />
+            </div>
+
+            <!--memory useage-->
+            <div>
+              <iframe
+                :src="'https://192.168.10.168/grafana/d-solo/c6e6bdd4-2b06-4c0b-a1dd-f5a7fa7f6e79/uat?orgId=1&theme=light&panelId=10&var-namespace=' + scope.row.namespace + '&var-pod=' + scope.row.name + '&from=' + startTimestamp +'&to=' + endTimestamp + '&refresh=' + refresh"
+                width="450"
+                height="200"
+                frameborder="0"
+              />
+            </div>
+
+            <!--memory cache-->
+            <div>
+              <iframe
+                :src="'https://192.168.10.168/grafana/d-solo/c6e6bdd4-2b06-4c0b-a1dd-f5a7fa7f6e79/uat?orgId=1&theme=light&panelId=45&var-namespace=' + scope.row.namespace + '&var-pod=' + scope.row.name + '&from=' + startTimestamp +'&to=' + endTimestamp + '&refresh=' + refresh"
+                width="450"
+                height="200"
+                frameborder="0"
+              />
+            </div>
+
+            <!--network I/O Error-->
+            <div>
+              <iframe
+                :src="'https://192.168.10.168/grafana/d-solo/c6e6bdd4-2b06-4c0b-a1dd-f5a7fa7f6e79/uat?orgId=1&theme=light&panelId=13&var-namespace=' + scope.row.namespace + '&var-pod=' + scope.row.name + '&from=' + startTimestamp +'&to=' + endTimestamp + '&refresh=' + refresh"
+                width="450"
+                height="200"
+                frameborder="0"
+              />
+            </div>
+
+            <!--network packets dropped-->
+            <div>
+              <iframe
+                :src="'https://192.168.10.168/grafana/d-solo/c6e6bdd4-2b06-4c0b-a1dd-f5a7fa7f6e79/uat?orgId=1&theme=light&panelId=14&var-namespace=' + scope.row.namespace + '&var-pod=' + scope.row.name + '&from=' + startTimestamp +'&to=' + endTimestamp + '&refresh=' + refresh"
+                width="450"
+                height="200"
+                frameborder="0"
+              />
+            </div>
+          </div>
+
+        </template>
+      </el-table-column>
       <!--排序必须设置prop才生效，无论是否使用插槽-->
       <el-table-column
         sortable
@@ -145,16 +205,17 @@
         </template>
       </el-table-column>
     </el-table>
-
   </div>
 </template>
 
 <script>
 import { getPod, deletePod } from '@/api/kubernetes/workload/pod'
+import GrafanaTimePicker from '@/components/GrafanaTimePicker'
 import YAML from 'js-yaml'
 
 export default {
   name: 'Pod',
+  components: { GrafanaTimePicker },
   props: {
     // 搜索
     search: {
@@ -207,7 +268,14 @@ export default {
       // 获取被选择项
       colSelected: ['Namespace', 'Containers', 'Status', 'Restarts', 'Controlled By', 'Node', 'Qos', 'Age'],
       // pod event
-      podEvent: []
+      podEvent: [],
+      // grafana start timestamp
+      startTimestamp: '',
+      // grafana end timestamp
+      endTimestamp: '',
+      // grafana refresh time
+      refresh: ''
+
     }
   },
   computed: {
@@ -260,6 +328,10 @@ export default {
           }
         })
       }
+    },
+    datetimerange(value) {
+      this.startTimestamp = value[0].getTime()
+      this.endTimestamp = value[1].getTime()
     }
   },
   mounted() {
@@ -365,6 +437,11 @@ export default {
         results.push(c_status)
       }
       return results
+    },
+    getValues(value) {
+      this.startTimestamp = value.startTimestamp
+      this.endTimestamp = value.endTimestamp
+      this.refresh = value.refresh
     }
   }
 }
@@ -436,6 +513,19 @@ export default {
 /*表头工具下拉菜单样式*/
 .el-checkbox, .el-checkbox__input {
   display: block;
+}
+
+.time-picker {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+.grafana-embed {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-content: space-around;
 }
 
 </style>

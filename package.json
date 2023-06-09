@@ -19,6 +19,7 @@
     "codemirror": "^5.65.12",
     "core-js": "3.6.5",
     "css-loader": "^5.2.6",
+    "echarts": "^5.4.2",
     "element-resize-detector": "^1.2.4",
     "element-ui": "^2.15.12",
     "font-awesome": "^4.7.0",

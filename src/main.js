@@ -17,8 +17,10 @@ import '@/utils/permission' // permission control
 import 'font-awesome/css/font-awesome.min.css'
 
 import shortid from 'shortid'
-Vue.prototype.shortid = shortid
+import * as echarts from 'echarts'
 
+Vue.prototype.shortid = shortid
+Vue.prototype.$echarts = echarts
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
